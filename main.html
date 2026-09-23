@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">ERROR</title>
+    <link rel="icon" type="image/x-icon" href="assets/iconB.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<style>
+    body {
+        background-color: whitesmoke;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        margin: 0;
+    }
+    .string {
+        background-color: white;
+        padding: 20px;
+        width: 200px;
+        border-radius: 30px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+    }
+    .maintext {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 25px;
+        text-align: center;
+        margin: 0;
+    }
+    .subtext {
+        font-size: 15px;
+        font-family: 'Quicksand', sans-serif;
+        text-align: center;
+        margin: 0;
+    }
+    .home, .end {
+        display: inline-block;
+        vertical-align: middle;
+        height: 20px;
+        line-height: 20px;
+        background-color: white;
+        padding: 10px;
+        border-radius: 30px;
+    }
+    .home {
+        font-size: 20px;
+        width: 20px;
+        transition-duration: 300ms;
+    }
+    .end {
+        font-size: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .home:hover {
+        background-color: black;
+        color: white;
+    }
+    .info {
+        width: 100vw;
+        bottom: 0;
+        left: 50%;
+        position: fixed;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 900;
+        transform: translate(-50%);
+        color: black;
+        /* margin-bottom: 20px; */
+        text-align: center;
+    }
+</style>
+<body>
+    <div class="string" onclick="Toggle()">
+        <p class="subtext" id="sibtext">There are</p>
+        <p id="string" class="maintext"></p>
+        <p class="subtext" id="subtext">Seconds Remaining</p>
+    </div>
+    <div class="info">
+        <p class="end" id="info">Hello</p>
+        <a style="color: black;" href="index.html"><p class="home"><i class="fa fa-home" aria-hidden="true"></i></p></a>
+    </div>
+</body>
+</html>
+<script>
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+title = urlParams.get('title')
+datetime = urlParams.get('datetime')
+backurl = urlParams.get('background')
+
+document.body.style.backgroundImage = "url("+backurl+")"
+document.getElementById("title").innerText = title
+
+var Fseconds = new Date(datetime).getTime() / 1000;
+
+setting = "sec"
+
+document.getElementById('info').innerText = "Counting down to " + datetime
+
+function Toggle() {
+    if (setting=="sec") {
+        setting = "day"
+        document.getElementById("subtext").innerText = "Days Remaining"
+        calculate()
+    } else if (setting=="day") {
+        setting = "sec"
+        document.getElementById("subtext").innerText = "Seconds Remaining"
+        calculate()
+    }
+}
+
+function calculate() {
+    var seconds = new Date().getTime() / 1000;
+    var today = new Date().toJSON().slice(0, 10)
+    var Dseconds = new Date(today + " 00:00:00").getTime() / 1000;
+    document.getElementById("sibtext").innerText = "There are"
+
+    seconds = Math.floor(seconds)
+
+    Fseconds = Math.floor(Fseconds)
+
+    Dseconds = Math.floor(Dseconds)
+    Dseconds = seconds-Dseconds
+    Dseconds = Dseconds%86400
+
+    gap = Fseconds - seconds
+
+    if (setting=="sec") {
+        document.getElementById("string").innerText = gap
+        if (gap==1) {
+            document.getElementById("sibtext").innerText = "There is"
+            document.getElementById("subtext").innerText = "Second Remaining"
+        }
+    } else if (setting=="day") {
+
+        Dgap = Math.floor((Dseconds+gap)/86400)
+
+        document.getElementById("string").innerText = Dgap
+
+        if (Dgap==1 && gap>0) {
+            document.getElementById("sibtext").innerText = "There is"
+            document.getElementById("subtext").innerText = "Day Remaining"
+        }
+    }
+
+    if (gap < 0) {
+        document.getElementById("string").innerHTML = "0";
+    }
+}
+
+calculate()
+
+var x = setInterval(function() {
+
+    calculate()
+    
+}, 1000);
+</script>
